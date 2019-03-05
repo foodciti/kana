@@ -38,6 +38,7 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
     RecyclerView BusyTableView;
     List<String> BusyTablelist = new ArrayList<>();
+    List<String> BusyTablePricelist = new ArrayList<>();
     TableListAdapter LAdapter;
     Button Logout;
 
@@ -189,11 +190,14 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
         InfoMessage( TableList.size() + " Total Table Found", Color.GREEN,32);
         String X = "";
+        String Y= "";
         for(int i = 0; i < TableList.size(); i++)
         {
             if (TableList.get(i).isOccupied()) {
-                X = "Table " + TableList.get(i).getNumber() + "            Amount  " + TableList.get(i).getAmount();
+                X = "Table " + TableList.get(i).getNumber();
+                Y= "Amount  " + TableList.get(i).getAmount();
                 BusyTablelist.add(X);
+                BusyTablePricelist.add(Y);
             }
 
         }
@@ -237,10 +241,10 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
         @Override
         public void onBindViewHolder(@NonNull TableListAdapter.ViewHolder holder, final int position) {
 
-            if(TableList.get(position).isOccupied()){
-                holder.table_name.setText("Table " + TableList.get(position).getNumber());
-                holder.table_price.setText( "Amount " + TableList.get(position).getAmount());
-            }
+
+                holder.table_name.setText(BusyTablelist.get(position).toString());
+                holder.table_price.setText(BusyTablePricelist.get(position).toString());
+
 
 
 
@@ -269,7 +273,7 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
         @Override
         public int getItemCount() {
-            return TableList.size();
+            return BusyTablelist.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

@@ -75,15 +75,15 @@ public class SplitActivity extends ArticleActivity {
         listdisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int count = TicketItemList1.get(i).getItemCount();
-                if(count > 1){
-                    ItemList1.add(ItemList.get(i-1));
+               // int count = TicketItemList1.get(i).getItemCount();
+               /* if(count > 1){
+
                     count =- 1;
                 } else {
-                    ItemList1.add(ItemList.get(i));
-                    PriceList1.add(PriceList.get(i));
-                }
 
+                }*/
+                ItemList1.add(ItemList.get(i));
+                PriceList1.add(PriceList.get(i));
                 ItemList.remove(i);
 
                 PriceList.remove(i);
@@ -114,7 +114,13 @@ public class SplitActivity extends ArticleActivity {
     }
 
     public void SplitSaldoPushButton() {
-        if(ItemList.size()< 1){
+        int count =0;
+        if(ItemList.size()>0 && ItemList1.size() >0){
+            count =2;
+        } else {
+
+        }
+        if(ItemList.size()<= 1){
 
         } else {
             ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
@@ -290,7 +296,7 @@ public class SplitActivity extends ArticleActivity {
                     tablesObject.put("id", TableList.get(TableIdentification).getId());
                     tablesObject.put("number", TableList.get(TableIdentification).getNumber());
                     tablesObject.put("occupied", true);
-                    tablesObject.put("split", true);
+
                     tablesObject.put("tickettype", TableList.get(TableIdentification).getTickettype());
                     tableArray.put(tablesObject);
 
@@ -303,7 +309,7 @@ public class SplitActivity extends ArticleActivity {
                     newJsonObject.put("drawerResetted", false);
                     newJsonObject.put("reOpened", false);
                     newJsonObject.put("ticketType", TableList.get(TableIdentification).getTickettype());
-
+                    newJsonObject.put("split", true);
                     newJsonObject.put("owner", UserJsonObject);
                     newJsonObject.put("ticketItems", jsonarray);
 
@@ -314,6 +320,7 @@ public class SplitActivity extends ArticleActivity {
                     newJsonObject.put("tableNumbers", TableList.get(TableIdentification).getNumber());
                     newJsonObject.put("gutschein", 0);
                     newJsonObject.put("beverageCount", 2);
+                    newJsonObject.put("totalAmount", round(bill1,2));
                     newJsonObject.put("type", TableList.get(TableIdentification).getTickettype());
 
 
