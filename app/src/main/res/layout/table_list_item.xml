@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="5dp"
+    android:background="@drawable/table_list_item_back"
+    android:layout_height="50dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/table_list_name"
+        android:layout_marginLeft="5dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:text="Table 1"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/table_list_name"
+        android:textSize="16sp"
+        android:textColor="#000"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/table_price"
+        android:text="Amount 15.0"
+        />
+
+
+</RelativeLayout>
