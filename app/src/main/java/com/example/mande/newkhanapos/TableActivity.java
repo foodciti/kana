@@ -256,6 +256,7 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
                     PressedKey = "";
                     char[] localvalue = new char[3];
                     //
+
                     BusyTablelist.get(position).getChars(6, 9, localvalue, 0);
                     Tableno = String.valueOf(localvalue);
 
