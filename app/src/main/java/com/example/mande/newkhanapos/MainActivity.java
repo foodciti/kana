@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private String convertInputStreamToString(InputStream inputStream) {
+    public String convertInputStreamToString(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
         String line;
