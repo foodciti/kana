@@ -3,8 +3,12 @@ package com.example.mande.newkhanapos;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,7 +38,7 @@ import java.util.List;
 
 public class SplitActivity extends ArticleActivity {
 
-    ListView listdisplay, listdisplay1;
+    RecyclerView listdisplay, listdisplay1;
     int count =0;
     ListAdapter LAdapter, LAdapter1;
     TextView TotalText, TotalText1;
@@ -83,16 +87,16 @@ public class SplitActivity extends ArticleActivity {
         bill2 = 0.0;
 
 
-        listdisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listdisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-               /* if(count > 1){
+               *//* if(count > 1){
 
                     count =- 1;
                 } else {
 
-                }*/
+                }*//*
                 int itemCount = TicketItemList.get(i).getItemCount();
 
                 if(itemCount > 1){
@@ -136,7 +140,7 @@ public class SplitActivity extends ArticleActivity {
                 split_ticket_item.remove(i);
                 previewDisplay1();
             }
-        });
+        });*/
 
         SaldoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1334,6 +1338,59 @@ public class SplitActivity extends ArticleActivity {
             InfoMessage(result, Color.RED, 32);
             super.onPostExecute(result);
 
+        }
+    }
+
+    class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder> {
+
+        @NonNull
+        @Override
+        public AdapterList.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AdapterList.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public ViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+
+    }
+
+    class AdapterList1 extends RecyclerView.Adapter<AdapterList.ViewHolder1> {
+
+        @NonNull
+        @Override
+        public AdapterList.ViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AdapterList.ViewHolder1 holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
+
+        public class ViewHolder1  extends RecyclerView.ViewHolder{
+            public ViewHolder1(View itemView) {
+                super(itemView);
+            }
         }
     }
 

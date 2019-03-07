@@ -7,7 +7,7 @@
 
     <!-- then the <include/> tag can then reference it, while merging. -->
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listid2"
         android:layout_width="506dp"
         android:layout_height="325dp"
@@ -125,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/listid2"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listid1"
         android:layout_width="506dp"
         android:layout_height="330dp"
