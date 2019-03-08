@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +43,8 @@ public class SplitActivity extends ArticleActivity {
 
     RecyclerView listdisplay, listdisplay1;
     int count =0;
-    ListAdapter LAdapter, LAdapter1;
+    AdapterList LAdapter;
+    AdapterList1 adapterList1;
     TextView TotalText, TotalText1;
     Button PreviewBack,SaldoButton;
     List<TicketItem> split_ticket_item = new ArrayList<>();
@@ -166,7 +170,7 @@ public class SplitActivity extends ArticleActivity {
             status="2";
             ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
             new PostNetworkConnectionSplit1().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
-           // postJsonBill(status) ;
+            // postJsonBill(status) ;
         }
 
     }
@@ -1206,19 +1210,33 @@ public class SplitActivity extends ArticleActivity {
             Total = Total + (TicketItemList.get(i).getUnitPrice() *TicketItemList.get(i).getItemCount());
         }
 
-        LAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, ItemList);
+        LAdapter = new AdapterList(TicketItemList);
+        RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+        listdisplay.setLayoutManager(mLayoutManager1);
+        listdisplay.setItemAnimator(new DefaultItemAnimator());
         listdisplay.setAdapter(LAdapter);
         TotalText.setText("€ " + round(Total, 2));
     }
 
     public void  previewDisplay1()
     {
-        LAdapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, ItemList1);
+       /* LAdapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, ItemList1);
         listdisplay1.setAdapter(LAdapter1);
+        bill2 = pricecalculation(PriceList1);
+        TotalText1.setText("€ " + round(bill2, 2));*/
+
+        adapterList1 = new AdapterList1(split_ticket_item);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        listdisplay1.setLayoutManager(mLayoutManager);
+        listdisplay1.setItemAnimator(new DefaultItemAnimator());
+        listdisplay1.setAdapter(adapterList1);
         bill2 = pricecalculation(PriceList1);
         TotalText1.setText("€ " + round(bill2, 2));
 
-        LAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, ItemList);
+        LAdapter = new AdapterList(TicketItemList);
+        RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+        listdisplay.setLayoutManager(mLayoutManager1);
+        listdisplay.setItemAnimator(new DefaultItemAnimator());
         listdisplay.setAdapter(LAdapter);
         bill1 = pricecalculation(PriceList);
         TotalText.setText("€ " + round(bill1, 2));
@@ -1342,54 +1360,135 @@ public class SplitActivity extends ArticleActivity {
     }
 
     class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder> {
+        List<TicketItem> ticket_list = new ArrayList<>();
+
+        public AdapterList(List<TicketItem> ticketItemList) {
+            this.ticket_list = ticketItemList;
+        }
 
         @NonNull
         @Override
         public AdapterList.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticket_item_split, parent, false);
+            return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull AdapterList.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull AdapterList.ViewHolder holder, final int position) {
+            TicketItem ticketItemList1 = ticket_list.get(position);
+            holder.itemCount.setText(ticketItemList1.getItemCount());
+            holder.itemId.setText(ticketItemList1.getItemCount());
+            holder.itemName.setText(ticketItemList1.getItemCount());
+            holder.price.setText(String.valueOf(ticketItemList1.getItemCount() *ticketItemList1.getUnitPrice()));
+            holder.itemCount.setText(ticketItemList1.getItemCount());
 
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int itemCount = TicketItemList.get(position).getItemCount();
+
+
+                    if(itemCount > 1){
+                        itemCount--;
+                        count++;
+                        if(count ==1){
+                           /* ItemList1.add(ItemList.get(position));
+                            PriceList1.add(PriceList.get(position));*/
+                            TicketItemList.get(position).setItemCode(count);
+                            split_ticket_item.add(TicketItemList.get(position));
+                            ItemList.remove(position);
+                            PriceList.remove(position);
+                        } else {
+
+                        }
+
+                    } else {
+                        count--;
+                        ItemList1.add(ItemList.get(position));
+                        PriceList1.add(PriceList.get(position));
+                        split_ticket_item.add(TicketItemList.get(position));
+                        ItemList.remove(position);
+                        PriceList.remove(position);
+                        TicketItemList.remove(position);
+                    }
+
+
+                    previewDisplay1();
+                }
+            });
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return ticket_list.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView itemCount, itemId,itemName, price;
             public ViewHolder(View itemView) {
                 super(itemView);
+                itemCount = findViewById(R.id.text_item_count);
+                itemId = findViewById(R.id.ticket_item_id);
+                itemName = findViewById(R.id.ticket_item_name);
+                price = findViewById(R.id.item_price);
             }
         }
 
 
     }
 
-    class AdapterList1 extends RecyclerView.Adapter<AdapterList.ViewHolder1> {
+    class AdapterList1 extends RecyclerView.Adapter<AdapterList1.ViewHolder1> {
+        List<TicketItem> split_list;
+
+        public AdapterList1(List<TicketItem> split_ticket_item) {
+            this.split_list = split_ticket_item;
+        }
 
         @NonNull
         @Override
-        public AdapterList.ViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-            return null;
+        public AdapterList1.ViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticket_item_split_,parent, false );
+            return new ViewHolder1(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull AdapterList.ViewHolder1 holder, int position) {
+        public void onBindViewHolder(@NonNull AdapterList1.ViewHolder1 holder, final int position) {
+            TicketItem ticketItemList = split_list.get(position);
+            holder.itemCount.setText(ticketItemList.getItemCount());
+            holder.itemId.setText(ticketItemList.getItemCount());
+            holder.itemName.setText(ticketItemList.getItemCount());
+            holder.price.setText(String.valueOf(ticketItemList.getItemCount() *ticketItemList.getUnitPrice()));
+            holder.itemCount.setText(ticketItemList.getItemCount());
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ItemList.add(ItemList1.get(position));
+                    PriceList.add(PriceList1.get(position));
+                    TicketItemList1.add(split_ticket_item.get(position));
+                    ItemList1.remove(position);
+                    PriceList1.remove(position);
+                    split_ticket_item.remove(position);
+                    previewDisplay1();
+                }
+            });
 
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return split_list.size();
         }
 
-        public class ViewHolder1  extends RecyclerView.ViewHolder{
+        public class ViewHolder1  extends RecyclerView.ViewHolder {
+            TextView itemCount, itemId,itemName, price;
             public ViewHolder1(View itemView) {
                 super(itemView);
+                itemCount = findViewById(R.id.text_item_count);
+                itemId = findViewById(R.id.ticket_item_id);
+                itemName = findViewById(R.id.ticket_item_name);
+                price = findViewById(R.id.item_price);
+
             }
         }
     }
