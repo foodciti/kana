@@ -7,15 +7,17 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="1"
+        android:textColor="#000"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
-        android:id="@+id/text_item_count"/>
+        android:id="@+id/text_item_count1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="X"
+        android:textColor="#000"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" />
@@ -24,7 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="04"
-        android:id="@+id/ticket_item_id"
+        android:id="@+id/ticket_item_id1"
+        android:textColor="#000"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" />
@@ -33,7 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="Zukatan"
-        android:id="@+id/ticket_item_name"
+        android:textColor="#000"
+        android:id="@+id/ticket_item_name1"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" />
@@ -42,7 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="10 "
-        android:id="@+id/item_price"
+        android:textColor="#000"
+        android:id="@+id/item_price1"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" />
