@@ -933,6 +933,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
 
     public void Invisibility()
     {
+
         basenumber.setVisibility(View.INVISIBLE);
         TotalText.setVisibility(View.INVISIBLE);
         TableDisplay.setVisibility(View.INVISIBLE);
