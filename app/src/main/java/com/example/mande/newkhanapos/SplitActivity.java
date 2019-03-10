@@ -101,7 +101,7 @@ public class SplitActivity extends ArticleActivity {
             @Override
             public void onClick(View view) {
                 SplitSaldoPushButton();
-                startActivity( new Intent(SplitActivity.this, TableActivity.class));
+                startActivity(new Intent(SplitActivity.this, TableActivity.class));
                 finish();
             }
         });
@@ -110,7 +110,7 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
-                check=true;
+                check = true;
                 PaymentactivationButton();
             }
         });
@@ -119,19 +119,12 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
-                check=true;
+                check = true;
                 PaymentactivationButton1();
             }
         });
         previewDisplay();
 
-    }
-
-    public void PaymentactivationButton1() {
-
-        gridLayout.setVisibility(View.VISIBLE);
-        findViewById(R.id.listid1).setVisibility(View.INVISIBLE);
-        PaymentButtonactivationForPayment1();
     }
 
 /*<!-----------------------------------------top_list------------------------------->*/
@@ -285,12 +278,14 @@ public class SplitActivity extends ArticleActivity {
         };
     }
 
-    View.OnClickListener CancelonFinaliseSplit() {
+    View.OnClickListener CancelonFinaliseSplit(){
         return new View.OnClickListener() {
             public void onClick(View v) {
                 grid.setVisibility(View.INVISIBLE);
-                //Visibility();
                 grid.removeAllViews();
+                findViewById(R.id.listid2).setVisibility(View.VISIBLE);
+                //Visibility();
+
                 //getPreviousArticle();
             }
 
@@ -341,9 +336,14 @@ public class SplitActivity extends ArticleActivity {
 
     /*-----------------------------------end--------------------------*/
 
-
     /* -------------------------------second Split List----------------------------*/
 
+    public void PaymentactivationButton1() {
+
+        gridLayout.setVisibility(View.VISIBLE);
+        findViewById(R.id.listid1).setVisibility(View.INVISIBLE);
+        PaymentButtonactivationForPayment1();
+    }
 
     private void PaymentButtonactivationForPayment1() {
 
@@ -491,8 +491,10 @@ public class SplitActivity extends ArticleActivity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 gridLayout.setVisibility(View.INVISIBLE);
-               // Visibility();
                 gridLayout.removeAllViews();
+                findViewById(R.id.listid1).setVisibility(View.VISIBLE);
+               // Visibility();
+
                 //getPreviousArticle();
             }
 

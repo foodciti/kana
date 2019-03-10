@@ -38,6 +38,7 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
     RecyclerView BusyTableView;
     List<String> BusyTablelist = new ArrayList<>();
+    List<Integer> BusyTablelist1 = new ArrayList<>();
     List<String> BusyTablePricelist = new ArrayList<>();
     TableListAdapter LAdapter;
     Button Logout;
@@ -197,6 +198,7 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
                 X = "Table " + TableList.get(i).getNumber();
                 Y= "Amount  " + TableList.get(i).getAmount();
                 BusyTablelist.add(X);
+                BusyTablelist1.add(Integer.parseInt(TableList.get(i).getNumber()));
                 BusyTablePricelist.add(Y);
             }
 
@@ -254,17 +256,23 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
                     InfoMessage("Table Exists " + TableList.get(position),Color.BLUE,32);
                     PressedKey = "";
+
+                    String length = TableList.get(position).getNumber();
                     char[] localvalue = new char[3];
-                    char[] localvalue1 = new char[2];
-                    //
-                    try {
+/*
+                    if (length.equals("3")){
                         BusyTablelist.get(position).getChars(6, 9, localvalue, 0);
-                    } catch (StringIndexOutOfBoundsException e){
-                         e.printStackTrace();
-                    }
+                    } else if(length.equals("2")){
+                        localvalue = new char[2];
+                        BusyTablelist.get(position).getChars(6, 8, localvalue, 0);
+                    } else {
+                        localvalue = new char[1];
+                        BusyTablelist.get(position).getChars(6, 7, localvalue, 0);
+                    }*/
 
+                    //
 
-                    Tableno = String.valueOf(localvalue);
+                    Tableno = BusyTablelist1.get(position).toString();
 
                     for(int j = 0; j< TableList.size(); j++){
                         if(TableList.get(j).getNumber() == Tableno)
