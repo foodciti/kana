@@ -255,9 +255,15 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
                     InfoMessage("Table Exists " + TableList.get(position),Color.BLUE,32);
                     PressedKey = "";
                     char[] localvalue = new char[3];
+                    char[] localvalue1 = new char[2];
                     //
+                    try {
+                        BusyTablelist.get(position).getChars(6, 9, localvalue, 0);
+                    } catch (StringIndexOutOfBoundsException e){
+                         e.printStackTrace();
+                    }
 
-                    BusyTablelist.get(position).getChars(6, 9, localvalue, 0);
+
                     Tableno = String.valueOf(localvalue);
 
                     for(int j = 0; j< TableList.size(); j++){
@@ -265,7 +271,6 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
                         {
                             TableIdentification = j;
                         }
-
                     }
                     redirect();
                 }

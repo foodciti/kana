@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mande.newkhanapos.models.TicketItem;
 import com.example.mande.newkhanapos.models.TicketItemCookingInstruction;
@@ -50,6 +51,7 @@ public class SplitActivity extends ArticleActivity {
     List<Double> PriceList, PriceList1;
     String status="";
     int round=0;
+    boolean check=false;
     int pre_round=0;
     Double bill1, bill2;
 
@@ -95,62 +97,6 @@ public class SplitActivity extends ArticleActivity {
         bill1 = 0.0;
         bill2 = 0.0;
 
-
-        /*listdisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-               *//* if(count > 1){
-
-                    count =- 1;
-                } else {
-
-                }*//*
-                int itemCount = TicketItemList.get(i).getItemCount();
-
-                if(itemCount > 1){
-                    itemCount--;
-                    count++;
-                    if(count ==1){
-                        ItemList1.add(ItemList.get(i));
-                        PriceList1.add(PriceList.get(i));
-                        TicketItemList.get(i).setItemCode(count);
-                        split_ticket_item.add(TicketItemList.get(i));
-                        ItemList.remove(i);
-                        PriceList.remove(i);
-                    } else {
-
-                    }
-
-                } else {
-                    count--;
-                    ItemList1.add(ItemList.get(i));
-                    PriceList1.add(PriceList.get(i));
-                    split_ticket_item.add(TicketItemList.get(i));
-                    ItemList.remove(i);
-                    PriceList.remove(i);
-                    TicketItemList.remove(i);
-                }
-
-
-                previewDisplay1();
-            }
-        });
-
-        listdisplay1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                ItemList.add(ItemList1.get(i));
-                PriceList.add(PriceList1.get(i));
-                TicketItemList1.add(split_ticket_item.get(i));
-                ItemList1.remove(i);
-                PriceList1.remove(i);
-                split_ticket_item.remove(i);
-                previewDisplay1();
-            }
-        });*/
-
         SaldoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,6 +110,7 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
+                check=true;
                 PaymentactivationButton();
             }
         });
@@ -172,6 +119,7 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
+                check=true;
                 PaymentactivationButton1();
             }
         });
@@ -195,6 +143,8 @@ public class SplitActivity extends ArticleActivity {
         findViewById(R.id.listid2).setVisibility(View.INVISIBLE);
         PaymentButtonactivationForPayment();
     }
+
+
     private void PaymentButtonactivationForPayment() {
 
       /*  LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -329,7 +279,6 @@ public class SplitActivity extends ArticleActivity {
                 }
                 else {
                     new PostNetworkConnectionTask().execute(ServeraddrHeader + Serveraddr + Value);
-                    onBackPressed();
                 }
             }
 
@@ -526,11 +475,12 @@ public class SplitActivity extends ArticleActivity {
                 gridLayout.removeAllViews();
                // getPreviousArticle();
                 if(split_ticket_item.size() < 1){
+
                     onBackPressed();
                 }
                 else {
-                    new PostNetworkConnectionTask().execute(ServeraddrHeader + Serveraddr + Value);
-                    onBackPressed();
+                    new PostNetworkConnectionTaskForPaymentSplit().execute(ServeraddrHeader + Serveraddr + Value);
+
                 }
             }
 
@@ -629,8 +579,7 @@ public class SplitActivity extends ArticleActivity {
         }
     }
 
-    public JSONObject postJsonSplit()
-    {
+    public JSONObject postJsonSplit() {
         JSONObject newJsonObject = new JSONObject();
         JSONObject newJsonObjectcheck = new JSONObject();
         newJsonObjectcheck = Ticketjsonobject;
@@ -951,9 +900,7 @@ public class SplitActivity extends ArticleActivity {
 
     }
 
-
-    public JSONObject postJsonSplit1()
-    {
+    public JSONObject postJsonSplit1() {
         JSONObject newJsonObject = new JSONObject();
         JSONObject newJsonObjectcheck = new JSONObject();
         newJsonObjectcheck = Ticketjsonobject;
@@ -1275,8 +1222,6 @@ public class SplitActivity extends ArticleActivity {
 
     }
 
-
-
     public void previewDisplay() {
 
         Total = 0;
@@ -1488,6 +1433,57 @@ public class SplitActivity extends ArticleActivity {
 
         }
     }
+    //PostNetworkConnectionTaskForPaymentSplit
+    public class PostNetworkConnectionTaskForPaymentSplit extends AsyncTask<String,String,String>{
+
+        //Execute this before the request is made
+        @Override
+        protected void onPreExecute() {
+            InfoMessage("starting", Color.GREEN, 32);
+        }
+
+        //Perform the request in background
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection;
+            try {
+
+                connection = (HttpURLConnection) new URL(params[0])
+                        .openConnection();
+                connection.setRequestMethod("POST");
+
+                connection.setRequestProperty("Content-Type", "application/json");
+                //       connection.setRequestProperty("Accept", "application/json");
+                connection.setConnectTimeout(5000);
+                connection.connect();
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam = postJsonForSplit();
+
+                //Create a writer object and make the request
+                OutputStreamWriter outputStream = new OutputStreamWriter(connection.getOutputStream());
+                outputStream.write(jsonParam.toString());
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+
+                String response = convertInputStreamToString(inputStream);
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        //Run this once the background task returns.
+        @Override
+        protected void onPostExecute(String result) {
+            InfoMessage(result, Color.RED, 32);
+            super.onPostExecute(result);
+
+        }
+    }
 
     class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder> {
         List<TicketItem> ticket_list = new ArrayList<>();
@@ -1517,83 +1513,41 @@ public class SplitActivity extends ArticleActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int itemCount =  TicketItemList.get(position).getItemCount();
-                    if(TicketItemList.get(position).getItemCount()==1){
-
-                        TicketItem ticketItem = new TicketItem();
-                        ticketItem.setItemCount(TicketItemList.get(position).getItemCount());
-                        ticketItem.setItemId(TicketItemList.get(position).getItemId());
-                        ticketItem.setName(TicketItemList.get(position).getName());
-                        ticketItem.setUnitPrice(TicketItemList.get(position).getUnitPrice());
-                        split_ticket_item.add(ticketItem);
-                        TicketItemList.remove(position);
-                        previewDisplay1();
-                    } else {
-                        round = round+1;
-
-                        if(round <= TicketItemList.get(position).getItemCount() ){
-
-                            holder.itemCount1.setText(String.valueOf(TicketItemList.get(position).getItemCount()-round));
+                    if(!check){
+                        int itemCount =  TicketItemList.get(position).getItemCount();
+                        if(TicketItemList.get(position).getItemCount()==1){
 
                             TicketItem ticketItem = new TicketItem();
-                            ticketItem.setItemCount(round);
+                            ticketItem.setItemCount(TicketItemList.get(position).getItemCount());
                             ticketItem.setItemId(TicketItemList.get(position).getItemId());
                             ticketItem.setName(TicketItemList.get(position).getName());
-                            ticketItem.setUnitPrice(TicketItemList.get(position).getUnitPrice() * round);
+                            ticketItem.setUnitPrice(TicketItemList.get(position).getUnitPrice());
                             split_ticket_item.add(ticketItem);
-                            TicketItemList.get(position).setItemCount(itemCount -= 1);
+                            TicketItemList.remove(position);
                             previewDisplay1();
                         } else {
-                            round=0;
-                        }
+                            round = round+1;
 
-                    }
+                            if(round <= TicketItemList.get(position).getItemCount() ){
 
-                    /*
-                    int itemCount = TicketItemList.get(position).getItemCount();
-                    round++;
-                    if(itemCount > 1){
-                        itemCount--;
-                        count++;
-                        if(count ==1){
-                           *//* ItemList1.add(ItemList.get(position));
-                            PriceList1.add(PriceList.get(position));*//*
-                            TicketItemList.get(position).setItemCount(itemCount);
-                            String count = countTemp.get(position);
-                            split_ticket_item.add(TicketItemList.get(position));
+                                holder.itemCount1.setText(String.valueOf(TicketItemList.get(position).getItemCount()-round));
 
-                            // TicketItemList.get(position).setItemCount(itemCount);
-                            *//*ItemList.remove(position);
-                            PriceList.remove(position);*//*
-                        } else {
-                            itemCount = TicketItemList.get(position).getItemCount();
-
-                            if(itemCount==1){
-                                split_ticket_item.add(TicketItemList.get(position));
-                                TicketItemList.remove(position);
+                                TicketItem ticketItem = new TicketItem();
+                                ticketItem.setItemCount(round);
+                                ticketItem.setItemId(TicketItemList.get(position).getItemId());
+                                ticketItem.setName(TicketItemList.get(position).getName());
+                                ticketItem.setUnitPrice(TicketItemList.get(position).getUnitPrice() * round);
+                                split_ticket_item.add(ticketItem);
+                                TicketItemList.get(position).setItemCount(itemCount -= 1);
+                                previewDisplay1();
                             } else {
-                                itemCount--;
-                                int item = split_ticket_item.get(position).getItemCount();
-                                TicketItemList.get(position).setItemCount(itemCount);
-                                split_ticket_item.get(position).setItemCount(item++);
+                                round=0;
                             }
 
                         }
-
                     } else {
-                        //  count--;
-                        *//*ItemList1.add(ItemList.get(position));
-                        PriceList1.add(PriceList.get(position));*//*
-                        split_ticket_item.add(TicketItemList.get(position));
-                        TicketItemList.remove(position);
-
-                       *//* ItemList.remove(position);
-                        PriceList.remove(position);*//*
 
                     }
-
-
-                    previewDisplay1(round);*/
                 }
             });
         }
@@ -1646,39 +1600,45 @@ public class SplitActivity extends ArticleActivity {
                 @Override
                 public void onClick(View view) {
 
-                    int itemCount = split_ticket_item.get(position).getItemCount();
+                    if(!check){
+                        int itemCount = split_ticket_item.get(position).getItemCount();
 
-                    if(split_ticket_item.get(position).getItemCount()==1){
+                        if(split_ticket_item.get(position).getItemCount()==1){
 
-                        TicketItem ticketItem = new TicketItem();
-                        ticketItem.setItemCount(split_ticket_item.get(position).getItemCount());
-                        ticketItem.setItemId(split_ticket_item.get(position).getItemId());
-                        ticketItem.setName(split_ticket_item.get(position).getName());
-                        ticketItem.setUnitPrice(split_ticket_item.get(position).getUnitPrice());
-                        TicketItemList.add(ticketItem);
-                        split_ticket_item.remove(position);
-                        previewDisplay1();
-                    } else {
-
-                        pre_round = pre_round+1;
-
-                        if(pre_round <= split_ticket_item.get(position).getItemCount() ){
-
-                            holder.itemCount.setText(String.valueOf(split_ticket_item.get(position).getItemCount()-pre_round));
-                            TicketItemList=new ArrayList<>();
                             TicketItem ticketItem = new TicketItem();
-                            ticketItem.setItemCount(pre_round);
+                            ticketItem.setItemCount(split_ticket_item.get(position).getItemCount());
                             ticketItem.setItemId(split_ticket_item.get(position).getItemId());
                             ticketItem.setName(split_ticket_item.get(position).getName());
-                            ticketItem.setUnitPrice(split_ticket_item.get(position).getUnitPrice() * pre_round);
+                            ticketItem.setUnitPrice(split_ticket_item.get(position).getUnitPrice());
                             TicketItemList.add(ticketItem);
-                            split_ticket_item.get(position).setItemCount(itemCount -= 1);
+                            split_ticket_item.remove(position);
                             previewDisplay1();
                         } else {
-                            pre_round=0;
+
+                            pre_round = pre_round+1;
+
+                            if(pre_round <= split_ticket_item.get(position).getItemCount() ){
+
+                                holder.itemCount.setText(String.valueOf(split_ticket_item.get(position).getItemCount()-pre_round));
+                                TicketItemList=new ArrayList<>();
+                                TicketItem ticketItem = new TicketItem();
+                                ticketItem.setItemCount(pre_round);
+                                ticketItem.setItemId(split_ticket_item.get(position).getItemId());
+                                ticketItem.setName(split_ticket_item.get(position).getName());
+                                ticketItem.setUnitPrice(split_ticket_item.get(position).getUnitPrice() * pre_round);
+                                TicketItemList.add(ticketItem);
+                                split_ticket_item.get(position).setItemCount(itemCount -= 1);
+                                previewDisplay1();
+                            } else {
+                                pre_round=0;
+                            }
+
                         }
+                    } else {
 
                     }
+
+
 
                     /*ItemList.add(ItemList1.get(position));
                     PriceList.add(PriceList1.get(position));
@@ -1708,6 +1668,648 @@ public class SplitActivity extends ArticleActivity {
 
             }
         }
+    }
+
+    public JSONObject postJson() {
+        JSONObject newJsonObject = new JSONObject();
+        JSONObject newJsonObjectcheck = new JSONObject();
+        newJsonObjectcheck = Ticketjsonobject;
+
+        JSONArray jsonarray = new JSONArray();
+        try {
+            if(newJsonObjectcheck==null)
+            {
+
+            }
+            else {
+                newJsonObject = newJsonObjectcheck;
+                jsonarray = newJsonObject.getJSONArray("ticketItems");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject prevjsonobject1 = null;
+        JSONObject newjsonobject1 = null;
+
+        if(jsonarray.length() == 0)
+        {
+            for(int i = 0; i<TicketItemList.size();i++) {
+
+                TicketItem ticketItem = new TicketItem();
+
+                try {
+
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(ticketItem);
+                    prevjsonobject1 = new JSONObject(jsonString);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                newjsonobject1 = prevjsonobject1;
+                TicketItemCookingInstruction TicketItemCookingInstructionobject = new TicketItemCookingInstruction();
+                JSONArray cookingJsonarray = new JSONArray();
+
+                int size = 0;
+                try{
+                    size = TicketItemList.get(i).getCookingInstructions().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for (int j = 0; j < size ;j++) {
+
+                    JSONObject cookingobject = null;
+                    try {
+                        Gson gsonobj = new Gson();
+                        String jsonStringobj = gsonobj.toJson(TicketItemCookingInstructionobject);
+                        cookingobject = new JSONObject(jsonStringobj);
+                        cookingobject.put("description",TicketItemList.get(i).getCookingInstructions().get(j).getDescription());
+                        cookingobject.put("printedToKitchen",true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    cookingJsonarray.put(cookingobject);
+                }
+
+                TicketItemModifierGroup TicketItemModifierGroupObject = new  TicketItemModifierGroup();
+                JSONArray TicketItemModifierGroupArray = new JSONArray();
+
+                TicketItemModifier TicketItemModifierObject = new TicketItemModifier();
+                JSONArray TicketItemModifierArray = new JSONArray();
+
+                int zusize = 0;
+                int zuModifiersize = 0;
+
+                try {zusize = TicketItemList.get(i).getTicketItemModifierGroups().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for ( int k = 0; k < zusize; k++)
+                {
+                    JSONObject ModifierGroupobject = null;
+                    Gson gsonobj1 = new Gson();
+                    String jsonStringobj1 = gsonobj1.toJson(TicketItemModifierGroupObject);
+
+
+                    try{zuModifiersize = TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().size();
+                    } catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    for (int j = 0; j < zuModifiersize ;j++) {
+
+                        JSONObject Modifierobject = null;
+                        try {
+                            Gson gsonobj = new Gson();
+                            String jsonStringobj = gsonobj.toJson(TicketItemModifierObject);
+                            Modifierobject = new JSONObject(jsonStringobj);
+                            Modifierobject.put("itemId",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getItemId());
+                            Modifierobject.put("itemCount",1);
+                            Modifierobject.put("name",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getName());
+                            Modifierobject.put("extraUnitPrice",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getExtraUnitPrice());
+                            Modifierobject.put("modifierType",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getModifierType());
+                            Modifierobject.put("shouldPrintToKitchen",true);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        TicketItemModifierArray.put(Modifierobject);
+                    }
+                    try {
+                        ModifierGroupobject = new JSONObject(jsonStringobj1);
+                        ModifierGroupobject.put("ticketItemModifiers",TicketItemModifierArray);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    TicketItemModifierGroupArray.put(ModifierGroupobject);
+                }
+
+                try {
+                    newjsonobject1.put("name", TicketItemList.get(i).getName());
+                    newjsonobject1.put("itemCount", TicketItemList.get(i).getItemCount());
+                    newjsonobject1.put("itemId", TicketItemList.get(i).getItemId());
+                    newjsonobject1.put("unitPrice", TicketItemList.get(i).getUnitPrice());
+                    newjsonobject1.put("id", null);
+                    newjsonobject1.put("modifiedTime", null);
+                    newjsonobject1.put("printedToKitchen", false);
+                    newjsonobject1.put("shouldPrintToKitchen",true);
+                    newjsonobject1.put("tableNumber", Tableno);
+                    newjsonobject1.put("cookingInstructions",cookingJsonarray);
+                    newjsonobject1.put("printorder",TicketItemList.get(i).getPrintorder());
+                    newjsonobject1.put("ticketItemModifierGroups",TicketItemModifierGroupArray);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsonarray.put(newjsonobject1);
+
+                JSONObject UserJsonObject = new JSONObject();
+
+                JSONArray tableArray = new JSONArray();
+                JSONObject tablesObject = new JSONObject();
+
+                JSONObject tObject = new JSONObject();
+
+                try {
+                    UserJsonObject.put("autoId", UserList.get(UserIdentification).getAutoId());
+                    UserJsonObject.put("userId", UserList.get(UserIdentification).getUserId());
+                    UserJsonObject.put("password", UserList.get(UserIdentification).getPassword());
+                    UserJsonObject.put("firstName", UserList.get(UserIdentification).getFirstName());
+                    UserJsonObject.put("lastName", UserList.get(UserIdentification).getLastName());
+                    UserJsonObject.put("administrator", UserList.get(UserIdentification).isAdministrator());
+                    UserJsonObject.put("manager", UserList.get(UserIdentification).isManager());
+
+                    tablesObject.put("id", TableList.get(TableIdentification).getId());
+                    tablesObject.put("number", TableList.get(TableIdentification).getNumber());
+                    tablesObject.put("occupied", true);
+                    tablesObject.put("tickettype", TableList.get(TableIdentification).getTickettype());
+                    tableArray.put(tablesObject);
+
+
+                    tObject.put("present", true);
+
+
+                    newJsonObject.put("id", JSONObject.NULL);
+                    newJsonObject.put("ticketid", JSONObject.NULL);
+                    newJsonObject.put("drawerResetted", false);
+                    newJsonObject.put("reOpened", false);
+                    newJsonObject.put("ticketType", TableList.get(TableIdentification).getTickettype());
+                    newJsonObject.put("split", true);
+                    newJsonObject.put("owner", UserJsonObject);
+                    newJsonObject.put("ticketItems", jsonarray);
+
+                    newJsonObject.put("couponAndDiscounts", new JSONArray());
+                    newJsonObject.put("tables", tableArray);
+
+                    newJsonObject.put("deletedItems", new JSONArray());
+                    newJsonObject.put("tableNumbers", TableList.get(TableIdentification).getNumber());
+                    newJsonObject.put("gutschein", 0);
+                    newJsonObject.put("beverageCount", 2);
+                    newJsonObject.put("type", TableList.get(TableIdentification).getTickettype());
+
+
+                    newJsonObject.put("table", tObject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        else if (jsonarray.length() != TicketItemList.size()){
+
+            for(int i = jsonarray.length(); i<TicketItemList.size();i++) {
+
+                TicketItem ticketItem = new TicketItem();
+
+                try {
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(ticketItem);
+                    prevjsonobject1 = new JSONObject(jsonString);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                newjsonobject1 = prevjsonobject1;
+                TicketItemCookingInstruction TicketItemCookingInstructionobject = new TicketItemCookingInstruction();
+                JSONArray cookingJsonarray = new JSONArray();
+
+                int size = 0;
+                try{
+                    size = TicketItemList.get(i).getCookingInstructions().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+                for (int j = 0; j < size ;j++) {
+
+                    JSONObject cookingobject = null;
+                    try {
+                        Gson gsonobj = new Gson();
+                        String jsonStringobj = gsonobj.toJson(TicketItemCookingInstructionobject);
+                        cookingobject = new JSONObject(jsonStringobj);
+                        cookingobject.put("description",TicketItemList.get(i).getCookingInstructions().get(j).getDescription());
+                        cookingobject.put("printedToKitchen",true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    cookingJsonarray.put(cookingobject);
+                }
+
+
+                TicketItemModifierGroup TicketItemModifierGroupObject = new  TicketItemModifierGroup();
+                JSONArray TicketItemModifierGroupArray = new JSONArray();
+
+                TicketItemModifier TicketItemModifierObject = new TicketItemModifier();
+                JSONArray TicketItemModifierArray = new JSONArray();
+
+                int zusize = 0;
+                int zuModifiersize = 0;
+
+                try {zusize = TicketItemList.get(i).getTicketItemModifierGroups().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for ( int k = 0; k < zusize; k++)
+                {
+                    JSONObject ModifierGroupobject = null;
+                    Gson gsonobj1 = new Gson();
+                    String jsonStringobj1 = gsonobj1.toJson(TicketItemModifierGroupObject);
+
+
+                    try{zuModifiersize = TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().size();
+                    } catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    for (int j = 0; j < zuModifiersize ;j++) {
+
+                        JSONObject Modifierobject = null;
+                        try {
+                            Gson gsonobj = new Gson();
+                            String jsonStringobj = gsonobj.toJson(TicketItemModifierObject);
+                            Modifierobject = new JSONObject(jsonStringobj);
+                            Modifierobject.put("itemId",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getItemId());
+                            Modifierobject.put("itemCount",1);
+                            Modifierobject.put("name",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getName());
+                            Modifierobject.put("extraUnitPrice",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getExtraUnitPrice());
+                            Modifierobject.put("modifierType",TicketItemList.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getModifierType());
+                            Modifierobject.put("shouldPrintToKitchen",true);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        TicketItemModifierArray.put(Modifierobject);
+                    }
+                    try {
+                        ModifierGroupobject = new JSONObject(jsonStringobj1);
+                        ModifierGroupobject.put("ticketItemModifiers",TicketItemModifierArray);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    TicketItemModifierGroupArray.put(ModifierGroupobject);
+                }
+
+
+                try {
+                    newjsonobject1.put("name",TicketItemList.get(i).getName());
+                    newjsonobject1.put("itemCount",TicketItemList.get(i).getItemCount());
+                    newjsonobject1.put("itemId",TicketItemList.get(i).getItemId());
+                    newjsonobject1.put("unitPrice",TicketItemList.get(i).getUnitPrice());
+                    newjsonobject1.put("printedToKitchen",false);
+                    newjsonobject1.put("shouldPrintToKitchen",true);
+                    newjsonobject1.put("cookingInstructions",cookingJsonarray);
+                    newjsonobject1.put("printorder",TicketItemList.get(i).getPrintorder());
+                    newjsonobject1.put("ticketItemModifierGroups",TicketItemModifierGroupArray);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                jsonarray.put(newjsonobject1);
+
+            }
+
+        }
+
+
+        return newJsonObject;
+
+    }
+
+    public JSONObject postJsonForSplit() {
+        JSONObject newJsonObject = new JSONObject();
+        JSONObject newJsonObjectcheck = new JSONObject();
+        newJsonObjectcheck = Ticketjsonobject;
+
+        JSONArray jsonarray = new JSONArray();
+        try {
+            if(newJsonObjectcheck==null)
+            {
+
+            }
+            else {
+                newJsonObject = newJsonObjectcheck;
+                jsonarray = newJsonObject.getJSONArray("ticketItems");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject prevjsonobject1 = null;
+        JSONObject newjsonobject1 = null;
+
+        if(jsonarray.length() == 0)
+        {
+            for(int i = 0; i<split_ticket_item.size();i++) {
+
+                TicketItem ticketItem = new TicketItem();
+
+                try {
+
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(ticketItem);
+                    prevjsonobject1 = new JSONObject(jsonString);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                newjsonobject1 = prevjsonobject1;
+                TicketItemCookingInstruction TicketItemCookingInstructionobject = new TicketItemCookingInstruction();
+                JSONArray cookingJsonarray = new JSONArray();
+
+                int size = 0;
+                try{
+                    size = split_ticket_item.get(i).getCookingInstructions().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for (int j = 0; j < size ;j++) {
+
+                    JSONObject cookingobject = null;
+                    try {
+                        Gson gsonobj = new Gson();
+                        String jsonStringobj = gsonobj.toJson(TicketItemCookingInstructionobject);
+                        cookingobject = new JSONObject(jsonStringobj);
+                        cookingobject.put("description",split_ticket_item.get(i).getCookingInstructions().get(j).getDescription());
+                        cookingobject.put("printedToKitchen",true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    cookingJsonarray.put(cookingobject);
+                }
+
+                TicketItemModifierGroup TicketItemModifierGroupObject = new  TicketItemModifierGroup();
+                JSONArray TicketItemModifierGroupArray = new JSONArray();
+
+                TicketItemModifier TicketItemModifierObject = new TicketItemModifier();
+                JSONArray TicketItemModifierArray = new JSONArray();
+
+                int zusize = 0;
+                int zuModifiersize = 0;
+
+                try {zusize = split_ticket_item.get(i).getTicketItemModifierGroups().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for ( int k = 0; k < zusize; k++)
+                {
+                    JSONObject ModifierGroupobject = null;
+                    Gson gsonobj1 = new Gson();
+                    String jsonStringobj1 = gsonobj1.toJson(TicketItemModifierGroupObject);
+
+
+                    try{zuModifiersize = split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().size();
+                    } catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    for (int j = 0; j < zuModifiersize ;j++) {
+
+                        JSONObject Modifierobject = null;
+                        try {
+                            Gson gsonobj = new Gson();
+                            String jsonStringobj = gsonobj.toJson(TicketItemModifierObject);
+                            Modifierobject = new JSONObject(jsonStringobj);
+                            Modifierobject.put("itemId",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getItemId());
+                            Modifierobject.put("itemCount",1);
+                            Modifierobject.put("name",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getName());
+                            Modifierobject.put("extraUnitPrice",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getExtraUnitPrice());
+                            Modifierobject.put("modifierType",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getModifierType());
+                            Modifierobject.put("shouldPrintToKitchen",true);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        TicketItemModifierArray.put(Modifierobject);
+                    }
+                    try {
+                        ModifierGroupobject = new JSONObject(jsonStringobj1);
+                        ModifierGroupobject.put("ticketItemModifiers",TicketItemModifierArray);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    TicketItemModifierGroupArray.put(ModifierGroupobject);
+                }
+
+                try {
+                    newjsonobject1.put("name", split_ticket_item.get(i).getName());
+                    newjsonobject1.put("itemCount", split_ticket_item.get(i).getItemCount());
+                    newjsonobject1.put("itemId", split_ticket_item.get(i).getItemId());
+                    newjsonobject1.put("unitPrice", split_ticket_item.get(i).getUnitPrice());
+                    newjsonobject1.put("id", null);
+                    newjsonobject1.put("modifiedTime", null);
+                    newjsonobject1.put("printedToKitchen", false);
+                    newjsonobject1.put("shouldPrintToKitchen",true);
+                    newjsonobject1.put("tableNumber", Tableno);
+                    newjsonobject1.put("cookingInstructions",cookingJsonarray);
+                    newjsonobject1.put("printorder",split_ticket_item.get(i).getPrintorder());
+                    newjsonobject1.put("ticketItemModifierGroups",TicketItemModifierGroupArray);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsonarray.put(newjsonobject1);
+
+                JSONObject UserJsonObject = new JSONObject();
+
+                JSONArray tableArray = new JSONArray();
+                JSONObject tablesObject = new JSONObject();
+
+                JSONObject tObject = new JSONObject();
+
+                try {
+                    UserJsonObject.put("autoId", UserList.get(UserIdentification).getAutoId());
+                    UserJsonObject.put("userId", UserList.get(UserIdentification).getUserId());
+                    UserJsonObject.put("password", UserList.get(UserIdentification).getPassword());
+                    UserJsonObject.put("firstName", UserList.get(UserIdentification).getFirstName());
+                    UserJsonObject.put("lastName", UserList.get(UserIdentification).getLastName());
+                    UserJsonObject.put("administrator", UserList.get(UserIdentification).isAdministrator());
+                    UserJsonObject.put("manager", UserList.get(UserIdentification).isManager());
+
+                    tablesObject.put("id", TableList.get(TableIdentification).getId());
+                    tablesObject.put("number", TableList.get(TableIdentification).getNumber());
+                    tablesObject.put("occupied", true);
+                    tablesObject.put("tickettype", TableList.get(TableIdentification).getTickettype());
+                    tableArray.put(tablesObject);
+
+
+                    tObject.put("present", true);
+
+
+                    newJsonObject.put("id", JSONObject.NULL);
+                    newJsonObject.put("ticketid", JSONObject.NULL);
+                    newJsonObject.put("drawerResetted", false);
+                    newJsonObject.put("reOpened", false);
+                    newJsonObject.put("ticketType", TableList.get(TableIdentification).getTickettype());
+                    newJsonObject.put("split", true);
+                    newJsonObject.put("owner", UserJsonObject);
+                    newJsonObject.put("ticketItems", jsonarray);
+
+                    newJsonObject.put("couponAndDiscounts", new JSONArray());
+                    newJsonObject.put("tables", tableArray);
+
+                    newJsonObject.put("deletedItems", new JSONArray());
+                    newJsonObject.put("tableNumbers", TableList.get(TableIdentification).getNumber());
+                    newJsonObject.put("gutschein", 0);
+                    newJsonObject.put("beverageCount", 2);
+                    newJsonObject.put("type", TableList.get(TableIdentification).getTickettype());
+
+
+                    newJsonObject.put("table", tObject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        else if (jsonarray.length() != split_ticket_item.size()){
+
+            for(int i = jsonarray.length(); i<split_ticket_item.size();i++) {
+
+                TicketItem ticketItem = new TicketItem();
+
+                try {
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(ticketItem);
+                    prevjsonobject1 = new JSONObject(jsonString);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                newjsonobject1 = prevjsonobject1;
+                TicketItemCookingInstruction TicketItemCookingInstructionobject = new TicketItemCookingInstruction();
+                JSONArray cookingJsonarray = new JSONArray();
+
+                int size = 0;
+                try{
+                    size = split_ticket_item.get(i).getCookingInstructions().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+                for (int j = 0; j < size ;j++) {
+
+                    JSONObject cookingobject = null;
+                    try {
+                        Gson gsonobj = new Gson();
+                        String jsonStringobj = gsonobj.toJson(TicketItemCookingInstructionobject);
+                        cookingobject = new JSONObject(jsonStringobj);
+                        cookingobject.put("description",split_ticket_item.get(i).getCookingInstructions().get(j).getDescription());
+                        cookingobject.put("printedToKitchen",true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    cookingJsonarray.put(cookingobject);
+                }
+
+
+                TicketItemModifierGroup TicketItemModifierGroupObject = new  TicketItemModifierGroup();
+                JSONArray TicketItemModifierGroupArray = new JSONArray();
+
+                TicketItemModifier TicketItemModifierObject = new TicketItemModifier();
+                JSONArray TicketItemModifierArray = new JSONArray();
+
+                int zusize = 0;
+                int zuModifiersize = 0;
+
+                try {zusize = split_ticket_item.get(i).getTicketItemModifierGroups().size();
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                for ( int k = 0; k < zusize; k++)
+                {
+                    JSONObject ModifierGroupobject = null;
+                    Gson gsonobj1 = new Gson();
+                    String jsonStringobj1 = gsonobj1.toJson(TicketItemModifierGroupObject);
+
+
+                    try{zuModifiersize = split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().size();
+                    } catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    for (int j = 0; j < zuModifiersize ;j++) {
+
+                        JSONObject Modifierobject = null;
+                        try {
+                            Gson gsonobj = new Gson();
+                            String jsonStringobj = gsonobj.toJson(TicketItemModifierObject);
+                            Modifierobject = new JSONObject(jsonStringobj);
+                            Modifierobject.put("itemId",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getItemId());
+                            Modifierobject.put("itemCount",1);
+                            Modifierobject.put("name",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getName());
+                            Modifierobject.put("extraUnitPrice",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getExtraUnitPrice());
+                            Modifierobject.put("modifierType",split_ticket_item.get(i).getTicketItemModifierGroups().get(k).getTicketItemModifiers().get(j).getModifierType());
+                            Modifierobject.put("shouldPrintToKitchen",true);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        TicketItemModifierArray.put(Modifierobject);
+                    }
+                    try {
+                        ModifierGroupobject = new JSONObject(jsonStringobj1);
+                        ModifierGroupobject.put("ticketItemModifiers",TicketItemModifierArray);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    TicketItemModifierGroupArray.put(ModifierGroupobject);
+                }
+
+
+                try {
+                    newjsonobject1.put("name",split_ticket_item.get(i).getName());
+                    newjsonobject1.put("itemCount",split_ticket_item.get(i).getItemCount());
+                    newjsonobject1.put("itemId",split_ticket_item.get(i).getItemId());
+                    newjsonobject1.put("unitPrice",split_ticket_item.get(i).getUnitPrice());
+                    newjsonobject1.put("printedToKitchen",false);
+                    newjsonobject1.put("shouldPrintToKitchen",true);
+                    newjsonobject1.put("cookingInstructions",cookingJsonarray);
+                    newjsonobject1.put("printorder",split_ticket_item.get(i).getPrintorder());
+                    newjsonobject1.put("ticketItemModifierGroups",TicketItemModifierGroupArray);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                jsonarray.put(newjsonobject1);
+
+            }
+
+        }
+
+
+        return newJsonObject;
+
     }
 
 

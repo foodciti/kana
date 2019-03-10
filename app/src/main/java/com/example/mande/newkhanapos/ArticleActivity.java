@@ -457,8 +457,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
     }
 
 
-    public JSONObject postJson()
-    {
+    public JSONObject postJson() {
         JSONObject newJsonObject = new JSONObject();
         JSONObject newJsonObjectcheck = new JSONObject();
         newJsonObjectcheck = Ticketjsonobject;
