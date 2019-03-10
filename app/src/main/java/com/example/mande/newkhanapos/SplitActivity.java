@@ -321,9 +321,9 @@ public class SplitActivity extends ArticleActivity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 grid.setVisibility(View.INVISIBLE);
-                Visibility();
+               // Visibility();
                 grid.removeAllViews();
-                getPreviousArticle();
+                //getPreviousArticle();
                 if(TicketItemList.size() < 1){
                     onBackPressed();
                 }
@@ -340,9 +340,9 @@ public class SplitActivity extends ArticleActivity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 grid.setVisibility(View.INVISIBLE);
-                Visibility();
+                //Visibility();
                 grid.removeAllViews();
-                getPreviousArticle();
+                //getPreviousArticle();
             }
 
         };
@@ -406,21 +406,21 @@ public class SplitActivity extends ArticleActivity {
         params.setMargins(5, 5, 5, 5);*/
 
 
-        GridLayout.Spec row0 = GridLayout.spec(0);
-        GridLayout.Spec row1 = GridLayout.spec(1);
-        GridLayout.Spec row2 = GridLayout.spec(2);
-        GridLayout.Spec row3 = GridLayout.spec(3);
-        GridLayout.Spec row4 = GridLayout.spec(4);
-        GridLayout.Spec row5 = GridLayout.spec(5);
+        GridLayout.Spec row00 = GridLayout.spec(0);
+        GridLayout.Spec row11 = GridLayout.spec(1);
+        GridLayout.Spec row22 = GridLayout.spec(2);
+        GridLayout.Spec row33 = GridLayout.spec(3);
+        GridLayout.Spec row44 = GridLayout.spec(4);
+        GridLayout.Spec row55 = GridLayout.spec(5);
 
-        GridLayout.Spec col0 = GridLayout.spec(0);
-        GridLayout.Spec col1 = GridLayout.spec(1);
-        GridLayout.Spec col2 = GridLayout.spec(2);
-        GridLayout.Spec col3 = GridLayout.spec(3);
-        GridLayout.Spec col4 = GridLayout.spec(4);
-        GridLayout.Spec col5 = GridLayout.spec(5);
+        GridLayout.Spec col00 = GridLayout.spec(0);
+        GridLayout.Spec col11 = GridLayout.spec(1);
+        GridLayout.Spec col22 = GridLayout.spec(2);
+        GridLayout.Spec col33 = GridLayout.spec(3);
+        GridLayout.Spec col44 = GridLayout.spec(4);
+        GridLayout.Spec col55 = GridLayout.spec(5);
 
-        GridLayout.LayoutParams First = new GridLayout.LayoutParams(row0, col0);
+        GridLayout.LayoutParams First = new GridLayout.LayoutParams(row00, col00);
 
         First.height = 100;
         First.width = 180;
@@ -435,12 +435,12 @@ public class SplitActivity extends ArticleActivity {
         PrintRadio.setOnClickListener(RadioCheckedSpilt1());
         PrintRadio.setId(1);
 
-        grid.addView(PrintRadio,First);
+        gridLayout.addView(PrintRadio,First);
 
         /*
         Official Radio button
          */
-        GridLayout.LayoutParams First1 = new GridLayout.LayoutParams(row0, col1);
+        GridLayout.LayoutParams First1 = new GridLayout.LayoutParams(row00, col11);
 
         First1.height = 100;
         First1.width = 180;
@@ -453,7 +453,7 @@ public class SplitActivity extends ArticleActivity {
         OfficialRadio.setOnClickListener(OfficialRadioSplitChecked1());
         OfficialRadio.setId(0);
 
-        grid.addView(OfficialRadio,First1);
+        gridLayout.addView(OfficialRadio,First1);
 
 
         /* Bar with Receipt*/
@@ -461,13 +461,13 @@ public class SplitActivity extends ArticleActivity {
         PaymentTypes[0] = new Button(this);
         PaymentTypes[0].setText("Bar");
 
-        GridLayout.LayoutParams Second = new GridLayout.LayoutParams(row1, col0);
+        GridLayout.LayoutParams Second = new GridLayout.LayoutParams(row11, col00);
 
         Second.height = 100;
         Second.width = 180;
         Second.setMargins(5,5,5,5);
 
-        grid.addView(PaymentTypes[0], Second);
+        gridLayout.addView(PaymentTypes[0], Second);
         String value0 = "/ticket/save?official="+Officialapi+"&print="+Printapi+"&saveType=1&paymentType=0";
         PaymentTypes[0].setOnClickListener(BarOnFinaliseSplit1(value0));
         PaymentTypes[0].setBackgroundResource(R.drawable.colorpopup);
@@ -477,13 +477,13 @@ public class SplitActivity extends ArticleActivity {
         /*card*/
         PaymentTypes[1] = new Button(this);
         PaymentTypes[1].setText("Card");
-        GridLayout.LayoutParams Third = new GridLayout.LayoutParams(row1, col1);
+        GridLayout.LayoutParams Third = new GridLayout.LayoutParams(row11, col11);
 
         Third.height = 100;
         Third.width = 180;
         Third.setMargins(5,5,5,5);
 
-        grid.addView(PaymentTypes[1], Third);
+        gridLayout.addView(PaymentTypes[1], Third);
         String value2  = "/ticket/save?official="+Officialapi+"&print="+Printapi+"&saveType=1&paymentType=1";
         PaymentTypes[1].setOnClickListener(BarOnFinaliseSplit1(value2));
         PaymentTypes[1].setBackgroundResource(R.drawable.colorpopup);
@@ -492,13 +492,13 @@ public class SplitActivity extends ArticleActivity {
         /*Online*/
         PaymentTypes[2] = new Button(this);
         PaymentTypes[2].setText("Online");
-        GridLayout.LayoutParams Fourth = new GridLayout.LayoutParams(row1, col2);
+        GridLayout.LayoutParams Fourth = new GridLayout.LayoutParams(row11, col22);
 
         Fourth.height = 100;
         Fourth.width = 180;
         Fourth.setMargins(5,5,5,5);
 
-        grid.addView(PaymentTypes[2], Fourth);
+        gridLayout.addView(PaymentTypes[2], Fourth);
         String value4  = "/ticket/save?official="+Officialapi+"&print="+Printapi+"&saveType=1&paymentType=2";
         PaymentTypes[2].setOnClickListener(BarOnFinaliseSplit1(value4));
         PaymentTypes[2].setBackgroundResource(R.drawable.colorpopup);
@@ -506,13 +506,13 @@ public class SplitActivity extends ArticleActivity {
         /*Cancel*/
         PaymentTypes[3] = new Button(this);
         PaymentTypes[3].setText("Cancel");
-        GridLayout.LayoutParams Fifth = new GridLayout.LayoutParams(row2, col0);
+        GridLayout.LayoutParams Fifth = new GridLayout.LayoutParams(row22, col00);
 
         Fifth.height = 100;
         Fifth.width = 180;
         Fifth.setMargins(5,5,5,5);
 
-        grid.addView(PaymentTypes[3], Fifth);
+        gridLayout.addView(PaymentTypes[3], Fifth);
         PaymentTypes[3].setOnClickListener(CancelonFinaliseSplit1());
         PaymentTypes[3].setBackgroundResource(R.drawable.colorpopup);
 
@@ -521,10 +521,10 @@ public class SplitActivity extends ArticleActivity {
     View.OnClickListener BarOnFinaliseSplit1(final String Value) {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                grid.setVisibility(View.INVISIBLE);
-                Visibility();
-                grid.removeAllViews();
-                getPreviousArticle();
+                gridLayout.setVisibility(View.INVISIBLE);
+                //Visibility();
+                gridLayout.removeAllViews();
+               // getPreviousArticle();
                 if(split_ticket_item.size() < 1){
                     onBackPressed();
                 }
@@ -540,10 +540,10 @@ public class SplitActivity extends ArticleActivity {
     View.OnClickListener CancelonFinaliseSplit1() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                grid.setVisibility(View.INVISIBLE);
-                Visibility();
-                grid.removeAllViews();
-                getPreviousArticle();
+                gridLayout.setVisibility(View.INVISIBLE);
+               // Visibility();
+                gridLayout.removeAllViews();
+                //getPreviousArticle();
             }
 
         };
