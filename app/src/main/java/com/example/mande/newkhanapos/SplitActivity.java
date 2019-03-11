@@ -300,11 +300,15 @@ public class SplitActivity extends ArticleActivity {
                         listdisplay.setVisibility(View.INVISIBLE);
                         SaldoButton1.setVisibility(View.INVISIBLE);
                         payment.setVisibility(View.INVISIBLE);
-                    } else  if(status_split_payment.equals("0")){
+                        findViewById(R.id.done).setVisibility(View.VISIBLE);
+                        findViewById(R.id.done).setBackgroundResource(R.drawable.colorbutton);
+                    } else if(status_split_payment.equals("0")){
                         status="0";
                         listdisplay.setVisibility(View.VISIBLE);
                         SaldoButton1.setVisibility(View.VISIBLE);
                         payment.setVisibility(View.VISIBLE);
+                        findViewById(R.id.done).setVisibility(View.INVISIBLE);
+
                     }
                 }
             }
@@ -315,6 +319,7 @@ public class SplitActivity extends ArticleActivity {
     View.OnClickListener CancelonFinaliseSplit(){
         return new View.OnClickListener() {
             public void onClick(View v) {
+                check = false;
                 grid.setVisibility(View.INVISIBLE);
                 grid.removeAllViews();
                 findViewById(R.id.listid2).setVisibility(View.VISIBLE);
@@ -524,6 +529,7 @@ public class SplitActivity extends ArticleActivity {
     View.OnClickListener CancelonFinaliseSplit1() {
         return new View.OnClickListener() {
             public void onClick(View v) {
+                check= false;
                 gridLayout.setVisibility(View.INVISIBLE);
                 gridLayout.removeAllViews();
                 findViewById(R.id.listid1).setVisibility(View.VISIBLE);
