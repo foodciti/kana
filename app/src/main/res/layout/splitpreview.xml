@@ -7,6 +7,22 @@
 
     <!-- then the <include/> tag can then reference it, while merging. -->
 
+    <Button
+        android:id="@+id/PreviewBack"
+        android:layout_width="144dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Button"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listid2"
         android:layout_width="506dp"
@@ -14,6 +30,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="484dp"
+        android:paddingBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
@@ -35,24 +52,43 @@
 
     </android.support.v7.widget.GridLayout>
 
-    <TextView
-        android:id="@+id/payment"
-        android:layout_width="120dp"
-        android:layout_height="64dp"
+
+    <Button
+        android:id="@+id/saldo"
+        android:layout_width="144dp"
+        android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Payment"
+        android:layout_marginBottom="8dp"
+        android:text="SALDO"
+        android:textSize="32sp"
         android:gravity="center"
-        android:textAlignment="center"
-        android:textSize="25sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/euroid1"
-        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/total1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintLeft_toLeftOf="@+id/total1"
+        android:layout_marginLeft="60dp"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/payment"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Payment"
+        android:textSize="32sp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/euroid1"
+        app:layout_constraintStart_toStartOf="@id/saldo"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toTopOf="@id/total1" />
 
     <TextView
         android:id="@+id/total1"
@@ -66,7 +102,6 @@
         android:text="Total"
         android:textAlignment="center"
         android:textSize="32sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/euroid1"
         app:layout_constraintHorizontal_bias="0.98"
@@ -79,7 +114,7 @@
         android:id="@+id/total2"
         android:layout_width="120dp"
         android:layout_height="64dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -158,57 +193,35 @@
 
     </android.support.v7.widget.GridLayout>
 
-    <TextView
-        android:id="@+id/payment2"
-        android:layout_width="120dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Payment"
-        android:layout_marginBottom="8dp"
-        android:textAlignment="center"
-        android:textSize="25sp"
-        android:gravity="center_vertical"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/euroid1"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/total2"
-        app:layout_constraintVertical_bias="1.0" />
-
-
-    <Button
-        android:id="@+id/PreviewBack"
-        android:layout_width="144dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Button"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:layout_width="144dp"
         android:layout_height="80dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
         android:text="Saldo"
         android:textSize="32sp"
-        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginStart="10dp"
         app:layout_constraintHorizontal_bias="0.0"
         android:id="@+id/SaldoButton"
-        app:layout_constraintLeft_toRightOf="@+id/PreviewBack"
         />
+
+    <Button
+        android:id="@+id/payment2"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Payment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/SaldoButton"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/textView2"

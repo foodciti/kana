@@ -43,14 +43,17 @@ public class SplitActivity extends ArticleActivity {
     int count =0;
     public static SplitActivity splitActivity;
     GridLayout gridLayout;
-    TextView TotalText, TotalText1,payment,payment2;
-    Button PreviewBack,SaldoButton;
+    Button payment,payment2;
+    TextView TotalText, TotalText1;
+    Button PreviewBack,SaldoButton, SaldoButton1;
     List<TicketItem> split_ticket_item = new ArrayList<>();
     List<String> countTemp = new ArrayList<>();
     List<String> ItemList, ItemList1;
     List<Double> PriceList, PriceList1;
-    String status="";
+    String status="0";
+    String status1="0";
     int round=0;
+    String what;
     boolean check=false;
     int pre_round=0;
     Double bill1, bill2;
@@ -77,16 +80,25 @@ public class SplitActivity extends ArticleActivity {
         SaldoButton = (Button) findViewById(R.id.SaldoButton);
         SaldoButton.setText("Saldo");
         SaldoButton.setBackgroundResource(R.drawable.colorbutton);
+        SaldoButton1 = findViewById(R.id.saldo);
+        SaldoButton1.setText("Saldo");
+        SaldoButton1.setBackgroundResource(R.drawable.colorbutton);
         grid = (GridLayout) findViewById(R.id.grid);
         grid.setVisibility(View.INVISIBLE);
 
         gridLayout = (GridLayout) findViewById(R.id.grid1);
         gridLayout.setVisibility(View.INVISIBLE);
         PreviewBack.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
-                onBackPressed();
+                if(status.equals("1") && status1.equals("1")){
+                    onBackPressed();
+                } else if(status.equals("0")){
+                    InfoMessage("Payment pending from first Person", Color.RED,32);
+                } else if(status1.equals("0")){
+                    InfoMessage("Payment pending from Second Person", Color.RED,32);
+                }
+
             }
         });
         ItemList = new ArrayList<>();
@@ -100,9 +112,20 @@ public class SplitActivity extends ArticleActivity {
         SaldoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SplitSaldoPushButton();
-                startActivity(new Intent(SplitActivity.this, TableActivity.class));
-                finish();
+                what = "bottom";
+                SplitSaldoPushButton(what);
+               // startActivity(new Intent(SplitActivity.this, TableActivity.class));
+               // finish();
+            }
+        });
+
+        SaldoButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                what = "top";
+                SplitSaldoPushButton(what);
+               // startActivity(new Intent(SplitActivity.this, TableActivity.class));
+               // finish();
             }
         });
 
@@ -272,6 +295,17 @@ public class SplitActivity extends ArticleActivity {
                 }
                 else {
                     new PostNetworkConnectionTask().execute(ServeraddrHeader + Serveraddr + Value);
+                    if(status_split_payment.equals("1")){
+                        status="1";
+                        listdisplay.setVisibility(View.INVISIBLE);
+                        SaldoButton1.setVisibility(View.INVISIBLE);
+                        payment.setVisibility(View.INVISIBLE);
+                    } else  if(status_split_payment.equals("0")){
+                        status="0";
+                        listdisplay.setVisibility(View.VISIBLE);
+                        SaldoButton1.setVisibility(View.VISIBLE);
+                        payment.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -546,22 +580,33 @@ public class SplitActivity extends ArticleActivity {
 
     /*------------------------------------End----------------------------------------*/
 
-    public void SplitSaldoPushButton() {
+    public void SplitSaldoPushButton(String what) {
         int splitCount =0;
-        if(TicketItemList.size()>0 && split_ticket_item.size() >0){
-            splitCount =2;
-            postDataJson(splitCount,bill1, bill2);
-        } else if(TicketItemList.size() > 0){
+
+       /* if(TicketItemList.size() > 0){
             status="1";
             ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
             new PostNetworkConnectionSplit().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
             //postJsonBill(status) ;
-        } else if(split_ticket_item.size() > 0){
-            status="2";
+        } else */
+
+       if (what.equals("bottom")){
+           if(split_ticket_item.size() > 0){
+
+               ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
+               new PostNetworkConnectionSplit1().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
+               // postJsonBill(status) ;
+           }
+       } else if(what.equals("top")){
+
+        if(TicketItemList.size() > 0){
+
             ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
-            new PostNetworkConnectionSplit1().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
-            // postJsonBill(status) ;
+            new PostNetworkConnectionSplit().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
+            //postJsonBill(status) ;
         }
+       }
+
 
     }
 
@@ -1272,6 +1317,8 @@ public class SplitActivity extends ArticleActivity {
                     + Zutaten);
             PriceList.add(TicketItemList.get(i).getUnitPrice() * TicketItemList.get(i).getItemCount());
             Total = Total + (TicketItemList.get(i).getUnitPrice() *TicketItemList.get(i).getItemCount());
+            payment2.setVisibility(View.INVISIBLE);
+            SaldoButton.setVisibility(View.INVISIBLE);
         }
 
 
@@ -1290,6 +1337,13 @@ public class SplitActivity extends ArticleActivity {
         TotalText1.setText("€ " + round(bill2, 2));*/
 
         AdapterList1 adapterList1 = new AdapterList1(this,split_ticket_item);
+        if(split_ticket_item.size()> 0){
+            SaldoButton.setVisibility(View.VISIBLE);
+            payment2.setVisibility(View.VISIBLE);
+        } else {
+            SaldoButton.setVisibility(View.INVISIBLE);
+            payment2.setVisibility(View.INVISIBLE);
+        }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         listdisplay1.setLayoutManager(mLayoutManager);
         listdisplay1.setItemAnimator(new DefaultItemAnimator());
@@ -1299,6 +1353,13 @@ public class SplitActivity extends ArticleActivity {
         TotalText1.setText("€ " + round(bill2, 2));
 
         AdapterList LAdapter = new AdapterList(this,TicketItemList);
+        if(TicketItemList.size()> 0){
+            SaldoButton1.setVisibility(View.VISIBLE);
+            payment.setVisibility(View.VISIBLE);
+        } else {
+            SaldoButton1.setVisibility(View.INVISIBLE);
+            payment.setVisibility(View.INVISIBLE);
+        }
         RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
         listdisplay.setLayoutManager(mLayoutManager1);
         listdisplay.setItemAnimator(new DefaultItemAnimator());
@@ -1380,6 +1441,22 @@ public class SplitActivity extends ArticleActivity {
         protected void onPostExecute(String result) {
             InfoMessage(result, Color.RED, 32);
             super.onPostExecute(result);
+            try {
+                JSONObject jsonObject1 = new JSONObject(result);
+                if(jsonObject1.getString("success").equals("true")){
+                    status="1";
+                    payment.setVisibility(View.INVISIBLE);
+                    SaldoButton1.setVisibility(View.INVISIBLE);
+                    listdisplay.setVisibility(View.INVISIBLE);
+                } else {
+                    status="0";
+                    payment.setVisibility(View.VISIBLE);
+                    SaldoButton1.setVisibility(View.VISIBLE);
+                    listdisplay.setVisibility(View.VISIBLE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -1432,7 +1509,22 @@ public class SplitActivity extends ArticleActivity {
         protected void onPostExecute(String result) {
             InfoMessage(result, Color.RED, 32);
             super.onPostExecute(result);
-
+            try {
+                JSONObject jsonObject1 = new JSONObject(result);
+                if(jsonObject1.getString("success").equals("true")){
+                    status1="1";
+                    payment2.setVisibility(View.INVISIBLE);
+                    SaldoButton.setVisibility(View.INVISIBLE);
+                    listdisplay1.setVisibility(View.INVISIBLE);
+                } else {
+                    status1="0";
+                    payment2.setVisibility(View.VISIBLE);
+                    SaldoButton.setVisibility(View.VISIBLE);
+                    listdisplay1.setVisibility(View.VISIBLE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
     //PostNetworkConnectionTaskForPaymentSplit
@@ -1483,6 +1575,22 @@ public class SplitActivity extends ArticleActivity {
         protected void onPostExecute(String result) {
             InfoMessage(result, Color.RED, 32);
             super.onPostExecute(result);
+            try {
+                JSONObject jsonObject1 = new JSONObject(result);
+                if(jsonObject1.getString("success").equals("true")){
+                    status1="1";
+                    listdisplay1.setVisibility(View.INVISIBLE);
+                    payment2.setVisibility(View.INVISIBLE);
+                    SaldoButton.setVisibility(View.INVISIBLE);
+                } else {
+                    status1 = "0";
+                    listdisplay1.setVisibility(View.VISIBLE);
+                    payment2.setVisibility(View.VISIBLE);
+                    SaldoButton.setVisibility(View.VISIBLE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }
