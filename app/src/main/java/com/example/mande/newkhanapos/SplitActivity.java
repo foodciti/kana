@@ -57,14 +57,12 @@ public class SplitActivity extends ArticleActivity {
     boolean check=false;
     int pre_round=0;
     Double bill1, bill2;
-
     List<TicketItem> TicketItemList1 = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splitpreview);
-
         TotalText = findViewById(R.id.euroid1);
         TotalText1 = findViewById(R.id.euroid2);
         payment = findViewById(R.id.payment);
@@ -91,13 +89,33 @@ public class SplitActivity extends ArticleActivity {
         PreviewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if(status.equals("1") && status1.equals("1")){
+                if(split_ticket_item.size() > 0 && TicketItemList.size() > 0){
+
+                    if(status.equals("1") && status1.equals("1")){
+                        onBackPressed();
+                    } else if(status.equals("0")){
+                        InfoMessage("Payment pending from first Person", Color.RED,32);
+                    } else if(status1.equals("0")){
+                        InfoMessage("Payment pending from Second Person", Color.RED,32);
+                    }
+                } else if(split_ticket_item.size() == 0){
+                    status1="1";
+                    if(status.equals("1") && status1.equals("1")){
+                        onBackPressed();
+                    } else if(status.equals("0")){
+                        InfoMessage("Payment pending from first Person", Color.RED,32);
+                    }
+                }else if(TicketItemList.size() == 0){
+                    status="1";
+                    if(status.equals("1") && status1.equals("1")){
+                        onBackPressed();
+                    } else if(status1.equals("0")){
+                        InfoMessage("Payment pending from second Person", Color.RED,32);
+                    }
+                } else {
                     onBackPressed();
-                } else if(status.equals("0")){
-                    InfoMessage("Payment pending from first Person", Color.RED,32);
-                } else if(status1.equals("0")){
-                    InfoMessage("Payment pending from Second Person", Color.RED,32);
                 }
+
 
             }
         });
@@ -1287,6 +1305,7 @@ public class SplitActivity extends ArticleActivity {
 
         }*/
 
+        Toast.makeText(SplitActivity.this, ""+TicketItemList.size(), Toast.LENGTH_SHORT).show();
 
         for (int i= 0; i < TicketItemList.size(); i++){
 
@@ -1319,8 +1338,8 @@ public class SplitActivity extends ArticleActivity {
 
 
             countTemp.add(String.valueOf(TicketItemList.get(i).getItemCount()));
-            ItemList.add( TicketItemList.get(i).getItemCount() + " X " + TicketItemList.get(i).getItemId() + " "+TicketItemList.get(i).getName() +  "   "+(TicketItemList.get(i).getUnitPrice() * TicketItemList.get(i).getItemCount()) +"€"
-                    + Zutaten);
+           /* ItemList.add( TicketItemList.get(i).getItemCount() + " X " + TicketItemList.get(i).getItemId() + " "+TicketItemList.get(i).getName() +  "   "+(TicketItemList.get(i).getUnitPrice() * TicketItemList.get(i).getItemCount()) +"€"
+                    + Zutaten);*/
             PriceList.add(TicketItemList.get(i).getUnitPrice() * TicketItemList.get(i).getItemCount());
             Total = Total + (TicketItemList.get(i).getUnitPrice() *TicketItemList.get(i).getItemCount());
             payment2.setVisibility(View.INVISIBLE);
@@ -1333,6 +1352,7 @@ public class SplitActivity extends ArticleActivity {
         listdisplay.setLayoutManager(mLayoutManager1);
         listdisplay.setItemAnimator(new DefaultItemAnimator());
         listdisplay.setAdapter(LAdapter);
+        LAdapter.notifyDataSetChanged();
         TotalText.setText("€ " + round(Total, 2));
     }
 

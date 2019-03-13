@@ -12,8 +12,10 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.textservice.SpellCheckerInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.mande.newkhanapos.Services.MyAppllication;
 import com.example.mande.newkhanapos.Services.NetworkChangeReceiver;
+import com.example.mande.newkhanapos.Services.SpecialNoteDialog;
 import com.example.mande.newkhanapos.models.Article;
 import com.example.mande.newkhanapos.models.MenuItemModifierGroup;
 import com.example.mande.newkhanapos.models.MenuModifier;
@@ -62,7 +65,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ArticleActivity extends MainActivity implements NetworkChangeReceiver.ConnectivityReceiverListener{
+public class ArticleActivity extends MainActivity implements NetworkChangeReceiver.ConnectivityReceiverListener,
+        SpecialNoteDialog.SpecialNodeListener{
 
     double Total ;
     TextView TotalText;
@@ -72,10 +76,10 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
     int newlistpos;
     static int iselectedItem;
     Boolean bselectedItem = false;
-
+   // SpecialNoteDialog addition;
     JSONObject Ticketjsonobject = null;
     JSONArray fetchedjsonArray = null;
-
+   // SpecialNoteDialog.SpecialNodeListener mlistenere;
     Button Saldo,Notiz,Gaenge,Zutaten,PrintButton, HomeButton, PaymentButton, SplitButton;
 
     GridLayout grid;
@@ -348,7 +352,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
             fetchedjsonArray = jsonarray1;
 
             JSONObject jsonobject1 = null;
-
+            TicketItemList.clear();
             for(int i = 0; i<jsonarray1.length();i++) {
 
                 TicketItem ticketItem = new TicketItem();
@@ -612,7 +616,6 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
                     UserJsonObject.put("lastName", UserList.get(UserIdentification).getLastName());
                     UserJsonObject.put("administrator", UserList.get(UserIdentification).isAdministrator());
                     UserJsonObject.put("manager", UserList.get(UserIdentification).isManager());
-
                     tablesObject.put("id", TableList.get(TableIdentification).getId());
                     tablesObject.put("number", TableList.get(TableIdentification).getNumber());
                     tablesObject.put("occupied", true);
@@ -800,14 +803,12 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
        if(bselectedItem)
         {
 
-            if((TicketItemList.size()-newlistpos >0) && (iselectedItem-newlistpos >= 0))
-            {
+            if((TicketItemList.size()-newlistpos >0) && (iselectedItem-newlistpos >= 0)) {
                 InstrucList.clear();
                 ServeraddrApi = "/cookinginstruction/all";
                 new NetworkConnectionTaskAlt().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
             }
-            else
-            {
+            else {
                 InfoMessage("Please add cooking instruction on new Item ", Color.RED,42);
             }
 
@@ -879,8 +880,28 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
         grid.addView(myButton[InstrucList.size()],params);
         myButton[InstrucList.size()].setOnClickListener(finalize(myButton[InstrucList.size()]));
 
+        myButton[InstrucList.size()] =  new Button(this);
+        myButton[InstrucList.size()].setText("Manual Entry");
+        myButton[InstrucList.size()].setTextColor(Color.BLUE);
+        myButton[InstrucList.size()].setBackgroundResource(R.drawable.colorpopup);
+
+        grid.addView(myButton[InstrucList.size()],params);
+        myButton[InstrucList.size()].setOnClickListener(ShowDialog(myButton[InstrucList.size()]));
+
+
     }
 
+    View.OnClickListener ShowDialog(final  Button button){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SpecialNoteDialog addition = SpecialNoteDialog.getInstance(true);
+                addition.setCancelable(false);
+                addition.show(getSupportFragmentManager(), null);
+            }
+        } ;
+
+    }
     View.OnClickListener getOnClickDoSomething(final Button button) {
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -896,8 +917,8 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
         return new View.OnClickListener() {
             public void onClick(View v) {
                 addInstructions();
-               grid.setVisibility(View.INVISIBLE);
-               Visibility();
+                grid.setVisibility(View.INVISIBLE);
+                Visibility();
                 grid.removeAllViews();
                 getPreviousArticle();
             }
@@ -1513,5 +1534,17 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
       } else {
           Toast.makeText(this, "Oops! Network Error", Toast.LENGTH_SHORT).show();
       }
+    }
+
+    @Override
+    public void returnSpecialNotes(String returnbackpound) {
+
+        detectList.add(returnbackpound.trim());
+        addInstructions();
+        grid.setVisibility(View.INVISIBLE);
+        Visibility();
+
+        grid.removeAllViews();
+        getPreviousArticle();
     }
 }
