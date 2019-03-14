@@ -41,7 +41,6 @@ public class SplitActivity extends ArticleActivity {
 
     RecyclerView listdisplay, listdisplay1;
     int count =0;
-    public static SplitActivity splitActivity;
     GridLayout gridLayout;
     Button payment,payment2;
     TextView TotalText, TotalText1;
@@ -151,7 +150,7 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
-                check = true;
+
                 PaymentactivationButton();
             }
         });
@@ -160,7 +159,7 @@ public class SplitActivity extends ArticleActivity {
 
             @Override
             public void onClick(View arg0) {
-                check = true;
+
                 PaymentactivationButton1();
             }
         });
@@ -315,6 +314,7 @@ public class SplitActivity extends ArticleActivity {
                     new PostNetworkConnectionTask().execute(ServeraddrHeader + Serveraddr + Value);
                     if(status_split_payment.equals("1")){
                         status="1";
+                        check = true;
                         listdisplay.setVisibility(View.INVISIBLE);
                         SaldoButton1.setVisibility(View.INVISIBLE);
                         payment.setVisibility(View.INVISIBLE);
@@ -322,6 +322,7 @@ public class SplitActivity extends ArticleActivity {
                         findViewById(R.id.done).setBackgroundResource(R.drawable.colorbutton);
                     } else if(status_split_payment.equals("0")){
                         status="0";
+                        check = false;
                         listdisplay.setVisibility(View.VISIBLE);
                         SaldoButton1.setVisibility(View.VISIBLE);
                         payment.setVisibility(View.VISIBLE);
@@ -1605,11 +1606,13 @@ public class SplitActivity extends ArticleActivity {
                 JSONObject jsonObject1 = new JSONObject(result);
                 if(jsonObject1.getString("success").equals("true")){
                     status1="1";
+                    check=true;
                     listdisplay1.setVisibility(View.INVISIBLE);
                     payment2.setVisibility(View.INVISIBLE);
                     SaldoButton.setVisibility(View.INVISIBLE);
                 } else {
                     status1 = "0";
+                    check=false;
                     listdisplay1.setVisibility(View.VISIBLE);
                     payment2.setVisibility(View.VISIBLE);
                     SaldoButton.setVisibility(View.VISIBLE);
