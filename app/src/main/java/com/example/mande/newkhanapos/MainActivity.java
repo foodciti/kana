@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     String PressedKey = "";
     static String Tableno = "";
     static String Articleno = "";
-    public String status_split_payment="0";
     String CurrentPressedKey ="";
     static List<Article> ArticleList = new ArrayList<>();
     static List<User> UserList = new ArrayList<>();
@@ -309,17 +308,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             InfoMessage(result, Color.RED, 32);
             super.onPostExecute(result);
-            try {
-                JSONObject jsonObject1 = new JSONObject(result);
-                if(jsonObject1.getString("success").equals("true")){
-                    status_split_payment="1";
-                } else{
-                    status_split_payment="0";
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 

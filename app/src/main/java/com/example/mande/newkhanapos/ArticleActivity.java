@@ -965,6 +965,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
         PrintButton.setVisibility(View.INVISIBLE);
         HomeButton.setVisibility(View.INVISIBLE);
         PaymentButton.setVisibility(View.INVISIBLE);
+        SplitButton.setVisibility(View.INVISIBLE);
     }
     public void Visibility()
     {
@@ -979,7 +980,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
         PrintButton.setVisibility(View.VISIBLE);
         HomeButton.setVisibility(View.VISIBLE);
         PaymentButton.setVisibility(View.VISIBLE);
-
+        SplitButton.setVisibility(View.VISIBLE);
     }
 
     public void GaengeActivation()
