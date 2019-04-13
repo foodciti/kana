@@ -81,6 +81,8 @@ public class TableActivity extends MainActivity implements NetworkChangeReceiver
 
             @Override
             public void onClick(View arg0) {
+                TableList.clear();
+                TicketItemList.clear();
                 onBackPressed();
             }
         });

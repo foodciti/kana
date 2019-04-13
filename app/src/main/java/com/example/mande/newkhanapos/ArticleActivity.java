@@ -52,11 +52,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -455,7 +457,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
         }
         else{
             ServeraddrApi = "/ticket/save?official=true&print=true&saveType=0";
-            new PostNetworkConnectionTask().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
+            new PostNetworkConnectionTask1().execute(ServeraddrHeader + Serveraddr + ServeraddrApi);
         }
 
     }
@@ -587,8 +589,8 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
                     newjsonobject1.put("itemCount", TicketItemList.get(i).getItemCount());
                     newjsonobject1.put("itemId", TicketItemList.get(i).getItemId());
                     newjsonobject1.put("unitPrice", TicketItemList.get(i).getUnitPrice());
-                    newjsonobject1.put("id", null);
-                    newjsonobject1.put("modifiedTime", null);
+                    newjsonobject1.put("id", String.valueOf(TicketItemList.get(i).getId()));
+                    newjsonobject1.put("modifiedTime", String.valueOf(System.currentTimeMillis()));
                     newjsonobject1.put("printedToKitchen", false);
                     newjsonobject1.put("shouldPrintToKitchen",true);
                     newjsonobject1.put("tableNumber", Tableno);
@@ -621,11 +623,7 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
                     tablesObject.put("occupied", true);
                     tablesObject.put("tickettype", TableList.get(TableIdentification).getTickettype());
                     tableArray.put(tablesObject);
-
-
                     tObject.put("present", true);
-
-
                     newJsonObject.put("id", JSONObject.NULL);
                     newJsonObject.put("ticketid", JSONObject.NULL);
                     newJsonObject.put("drawerResetted", false);
@@ -1547,5 +1545,56 @@ public class ArticleActivity extends MainActivity implements NetworkChangeReceiv
 
         grid.removeAllViews();
         getPreviousArticle();
+    }
+
+    public class PostNetworkConnectionTask1 extends AsyncTask<String,String,String>{
+
+        //Execute this before the request is made
+        @Override
+        protected void onPreExecute() {
+            InfoMessage("starting", Color.GREEN, 32);
+        }
+
+        //Perform the request in background
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection;
+            try {
+
+                connection = (HttpURLConnection) new URL(params[0])
+                        .openConnection();
+                connection.setRequestMethod("POST");
+
+                connection.setRequestProperty("Content-Type", "application/json");
+                //       connection.setRequestProperty("Accept", "application/json");
+                connection.setConnectTimeout(5000);
+                connection.connect();
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam = postJson();
+
+                Log.d("error",jsonParam.toString());
+                //Create a writer object and make the request
+                OutputStreamWriter outputStream = new OutputStreamWriter(connection.getOutputStream());
+                outputStream.write(jsonParam.toString());
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+
+                String response = convertInputStreamToString(inputStream);
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        //Run this once the background task returns.
+        @Override
+        protected void onPostExecute(String result) {
+            InfoMessage(result, Color.RED, 32);
+            super.onPostExecute(result);
+        }
     }
 }
